@@ -28,6 +28,13 @@ GRAVITY = 0.5
 JUMP_POWER = -12
 GROUND_Y = 500
 
+# 足場
+platforms = [
+    {"x": 200, "y": 400, "w": 150, "h": 20},
+    {"x": 450, "y": 320, "w": 150, "h": 20},
+    {"x": 650, "y": 420, "w": 150, "h": 20},
+]
+
 # 攻撃
 is_attacking = False
 attack_timer = 0
@@ -126,10 +133,20 @@ while running:
         # 重力
         velocity_y += GRAVITY
         player_y += velocity_y
+        # 地面に着地
         if player_y >= GROUND_Y:
             player_y = GROUND_Y
             velocity_y = 0
             is_jumping = False
+
+        # 足場に着地
+        for platform in platforms:
+            p_rect = pygame.Rect(platform["x"], platform["y"], platform["w"], platform["h"])
+            player_rect = pygame.Rect(player_x, player_y, player_w, player_h)
+            if player_rect.colliderect(p_rect) and velocity_y >= 0:
+                player_y = platform["y"] - player_h
+                velocity_y = 0
+                is_jumping = False
 
         # 攻撃タイマー
         if is_attacking:
@@ -251,6 +268,10 @@ while running:
 
     if enemy_alive:
         screen.blit(enemy_img, (enemy_x, enemy_y))
+
+    # 足場を描画
+    for platform in platforms:
+        pygame.draw.rect(screen, (139, 90, 43), (platform["x"], platform["y"], platform["w"], platform["h"]))
 
     # 攻撃エフェクト
     if is_attacking:
