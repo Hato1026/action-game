@@ -20,6 +20,7 @@ player_hp = 5
 player_invincible = 0
 game_over = False
 game_clear = False
+title_screen = True  # 最初はタイトル画面を表示
 facing_right = True
 
 velocity_y = 0
@@ -41,16 +42,21 @@ is_attacking = False
 attack_timer = 0
 ATTACK_DURATION = 15
 
+if not game_over and not game_clear and not title_screen:
+        keys = pygame.key.get_pressed()
+        
 running = True
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE and not is_jumping and not game_over:
+            if event.key == pygame.K_RETURN and title_screen:
+                title_screen = False
+            if event.key == pygame.K_SPACE and not is_jumping and not game_over and not game_clear and not title_screen:
                 velocity_y = JUMP_POWER
                 is_jumping = True
-            if event.key == pygame.K_z and not is_attacking and not game_over:
+            if event.key == pygame.K_z and not is_attacking and not game_over and not game_clear and not title_screen:
                 is_attacking = True
                 attack_timer = ATTACK_DURATION
             if event.key == pygame.K_r and (game_over or game_clear):
@@ -162,6 +168,15 @@ while running:
         font2 = pygame.font.SysFont("msmincho", 30)
         text2 = font2.render("Rキーで再スタート", True, (255, 255, 255))
         screen.blit(text2, (300, 350))
+    
+    if title_screen:
+        screen.fill((0, 0, 0))
+        font = pygame.font.SysFont("msmincho", 60)
+        text = font.render("アクションゲーム", True, (255, 215, 0))
+        screen.blit(text, (180, 200))
+        font2 = pygame.font.SysFont("msmincho", 30)
+        text2 = font2.render("Enterキーでスタート", True, (255, 255, 255))
+        screen.blit(text2, (280, 320))
 
     pygame.display.flip()
     clock.tick(60)
