@@ -19,6 +19,7 @@ player_speed = 5
 player_hp = 5
 player_invincible = 0
 game_over = False
+game_clear = False
 facing_right = True
 
 velocity_y = 0
@@ -52,7 +53,7 @@ while running:
             if event.key == pygame.K_z and not is_attacking and not game_over:
                 is_attacking = True
                 attack_timer = ATTACK_DURATION
-            if event.key == pygame.K_r and game_over:
+            if event.key == pygame.K_r and (game_over or game_clear):
                 player_hp = 5
                 player_x = 100
                 player_y = 400
@@ -61,6 +62,7 @@ while running:
                 enemy_y = 500
                 enemy_alive = True
                 game_over = False
+                game_clear = False
 
     if not game_over:
         keys = pygame.key.get_pressed()
@@ -95,6 +97,7 @@ while running:
                 enemy_invincible = 30
                 if enemy_hp <= 0:
                     enemy_alive = False
+                    game_clear = True
 
         if enemy_invincible > 0:
             enemy_invincible -= 1
@@ -147,6 +150,15 @@ while running:
         font = pygame.font.SysFont("msmincho", 60)
         text = font.render("ゲームオーバー", True, (255, 0, 0))
         screen.blit(text, (200, 250))
+        font2 = pygame.font.SysFont("msmincho", 30)
+        text2 = font2.render("Rキーで再スタート", True, (255, 255, 255))
+        screen.blit(text2, (300, 350))
+
+    if game_clear:
+        screen.fill((0, 0, 0))
+        font = pygame.font.SysFont("msmincho", 60)
+        text = font.render("クリア！", True, (255, 215, 0))
+        screen.blit(text, (300, 250))
         font2 = pygame.font.SysFont("msmincho", 30)
         text2 = font2.render("Rキーで再スタート", True, (255, 255, 255))
         screen.blit(text2, (300, 350))
